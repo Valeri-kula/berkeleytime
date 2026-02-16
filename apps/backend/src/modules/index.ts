@@ -9,6 +9,7 @@ import Collection from "./collection";
 import Common from "./common";
 import Course from "./course";
 import CuratedClasses from "./curated-classes";
+import Discussion from "./discussion";
 import Enrollment from "./enrollment";
 import GradeDistribution from "./grade-distribution";
 import Plan from "./plan";
@@ -29,6 +30,7 @@ const modules = [
   Catalog,
   CuratedClasses,
   Collection,
+  Discussion,
   Common,
   Schedule,
   Staff,
