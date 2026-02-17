@@ -4,10 +4,7 @@ import {
   addDiscussionComment as addDiscussionCommentController,
   getDiscussionComments,
 } from "./controller";
-import {
-  formatDiscussionComment,
-  formatDiscussionComments,
-} from "./formatter";
+import { formatDiscussionComment, formatDiscussionComments } from "./formatter";
 
 const resolvers = {
   Query: {

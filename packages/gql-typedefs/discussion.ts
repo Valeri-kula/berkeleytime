@@ -15,6 +15,9 @@ export const discussionTypeDef = gql`
   }
 
   extend type Mutation {
-    addDiscussionComment(courseId: String!, comment: String!): DiscussionComment!
+    addDiscussionComment(
+      courseId: String!
+      comment: String!
+    ): DiscussionComment!
   }
 `;
