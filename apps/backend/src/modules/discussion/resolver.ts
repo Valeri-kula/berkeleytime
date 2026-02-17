@@ -6,6 +6,13 @@ import {
 } from "./controller";
 import { formatDiscussionComment, formatDiscussionComments } from "./formatter";
 
+type GqlContext = {
+  user?: { _id: string };
+};
+
+const getErrorMessage = (err: unknown) =>
+  err instanceof Error ? err.message : "An unexpected error occurred";
+
 const resolvers = {
   Query: {
     discussionComments: async (
@@ -17,12 +24,9 @@ const resolvers = {
         return formatDiscussionComments(result);
       } catch (error: unknown) {
         if (error instanceof GraphQLError) throw error;
-        throw new GraphQLError(
-          typeof error === "object" && error !== null && "message" in error
-            ? String((error as any).message)
-            : "An unexpected error occurred",
-          { extensions: { code: "INTERNAL_SERVER_ERROR" } }
-        );
+        throw new GraphQLError(getErrorMessage(error), {
+          extensions: { code: "INTERNAL_SERVER_ERROR" },
+        });
       }
     },
   },
@@ -31,23 +35,25 @@ const resolvers = {
     addDiscussionComment: async (
       _: unknown,
       { courseId, comment }: { courseId: string; comment: string },
-      context: any
+      context: GqlContext
     ) => {
       try {
+        if (!context.user?._id) {
+          throw new GraphQLError("Unauthorized", {
+            extensions: { code: "UNAUTHENTICATED" },
+          });
+        }
         const saved = await addDiscussionCommentController(
-          context,
           courseId,
+          context.user._id,
           comment
         );
         return formatDiscussionComment(saved);
       } catch (error: unknown) {
         if (error instanceof GraphQLError) throw error;
-        throw new GraphQLError(
-          typeof error === "object" && error !== null && "message" in error
-            ? String((error as any).message)
-            : "An unexpected error occurred",
-          { extensions: { code: "INTERNAL_SERVER_ERROR" } }
-        );
+        throw new GraphQLError(getErrorMessage(error), {
+          extensions: { code: "INTERNAL_SERVER_ERROR" },
+        });
       }
     },
   },

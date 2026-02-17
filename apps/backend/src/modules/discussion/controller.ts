@@ -1,5 +1,3 @@
-import { GraphQLError } from "graphql";
-
 import { DiscussionModel } from "@repo/common/models";
 
 export const getDiscussionComments = async (
@@ -16,18 +14,10 @@ export const getDiscussionComments = async (
 };
 
 export const addDiscussionComment = async (
-  context: any,
   courseId: string,
+  userId: string,
   comment: string
 ) => {
-  const userId = context?.user?._id;
-
-  if (!userId) {
-    throw new GraphQLError("Unauthorized", {
-      extensions: { code: "UNAUTHENTICATED" },
-    });
-  }
-
   const doc = new DiscussionModel({ courseId, userId, comment });
   return doc.save();
 };
